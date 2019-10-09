@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kingdom of Sicily Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+       #floating-panel {
+        position: absolute;
+        top: 10px;
+        right: 5%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+      div[style*="color: white; font-size: 12px; font-weight: bold; font-family: Roboto, Arial, sans-serif"],
+      div[style*="color: white; font-size: 18px; font-weight: bold; font-family: Roboto, Arial, sans-serif"] {
+        text-shadow: 1px 1px grey;
+
+      }
+    </style>
+  </head>
+  <body>
+     <div id="floating-panel">
+      <input type="button" id="layerToggle" value="Hide Roman Roads"></input>
+    </div>
+    <!--<div id="zoom"></div>-->
+    <div id="map"></div>
+    <script>
+      var map;
+      var layer1;
+      var minorsites;
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 7,
+          center: {lat: 39.5230206, lng: 12.4172411},
+          mapTypeId: 'terrain',
+          gestureHandling: 'cooperative',
+          styles: [
+            {
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#ebe3cd"
+                }
+              ]
+            },
+            {
+              "elementType": "labels",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#523735"
+                }
+              ]
+            },
+            {
+              "elementType": "labels.text.stroke",
+              "stylers": [
+                {
+                  "color": "#f5f1e6"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative",
+              "elementType": "geometry.stroke",
+              "stylers": [
+                {
+                  "color": "#c9b2a6"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative.land_parcel",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative.land_parcel",
+              "elementType": "geometry.stroke",
+              "stylers": [
+                {
+                  "color": "#dcd2be"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative.land_parcel",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#ae9e90"
+                }
+              ]
+            },
+            {
+              "featureType": "administrative.neighborhood",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "landscape.natural",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#dfd2ae"
+                }
+              ]
+            },
+            {
+              "featureType": "poi",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#dfd2ae"
+                }
+              ]
+            },
+            {
+              "featureType": "poi",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#93817c"
+                }
+              ]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "geometry.fill",
+              "stylers": [
+                {
+                  "color": "#a5b076"
+                }
+              ]
+            },
+            {
+              "featureType": "poi.park",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#447530"
+                }
+              ]
+            },
+            {
+              "featureType": "road",
+              "stylers": [
+                {
+                  "visibility": "off"
+                }
+              ]
+            },
+            {
+              "featureType": "road",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#f5f1e6"
+                }
+              ]
+            },
+            {
+              "featureType": "road.arterial",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#fdfcf8"
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#f8c967"
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway",
+              "elementType": "geometry.stroke",
+              "stylers": [
+                {
+                  "color": "#e9bc62"
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway.controlled_access",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#e98d58"
+                }
+              ]
+            },
+            {
+              "featureType": "road.highway.controlled_access",
+              "elementType": "geometry.stroke",
+              "stylers": [
+                {
+                  "color": "#db8555"
+                }
+              ]
+            },
+            {
+              "featureType": "road.local",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#806b63"
+                }
+              ]
+            },
+            {
+              "featureType": "transit.line",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#dfd2ae"
+                }
+              ]
+            },
+            {
+              "featureType": "transit.line",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#8f7d77"
+                }
+              ]
+            },
+            {
+              "featureType": "transit.line",
+              "elementType": "labels.text.stroke",
+              "stylers": [
+                {
+                  "color": "#ebe3cd"
+                }
+              ]
+            },
+            {
+              "featureType": "transit.station",
+              "elementType": "geometry",
+              "stylers": [
+                {
+                  "color": "#dfd2ae"
+                }
+              ]
+            },
+            {
+              "featureType": "water",
+              "elementType": "geometry.fill",
+              "stylers": [
+                {
+                  "color": "#b9d3c2"
+                }
+              ]
+            },
+            {
+              "featureType": "water",
+              "elementType": "labels.text.fill",
+              "stylers": [
+                {
+                  "color": "#92998d"
+                }
+              ]
+            }
+          ]
+        });
+        map.setOptions({ minZoom: 5, maxZoom: 15 });
+        // Load roman roads layer
+        var romanroads = new google.maps.Data();
+        romanroads.loadGeoJson('romanroads.json');
+        // Change color of romanroads layer
+        romanroads.setStyle(function(feature) {
+          var color = '#bba3d0';
+          return /** @type {google.maps.Data.StyleOptions} */({
+            strokeColor: color,
+            strokeWeight: 2
+           });
+        });
+        // Add roman roads layer to the map; comment the below line if you don't want roman roads
+        // loaded with map and change line 36 "value" to "Show Roman Roads".
+        romanroads.setMap(map);
+        // Toggle button to turn roman road off and on
+        google.maps.event.addDomListener(document.getElementById('layerToggle'), 'click', toggleLayer);
+        // Set the visibility to 'hidden' or 'visible' of romanroads.
+        function toggleLayer() {
+          if(romanroads.getMap() == null) {
+            romanroads.setMap(map);
+            this.value = "Hide Roman Roads";
+          } else {
+            romanroads.setMap(null);
+            this.value = "Show Roman Roads";
+          }
+        }
+        // Load, style, and render major sites file
+        //var sites = new google.maps.Data();
+        var zIndex=1;
+        defaultsites = new google.maps.Data();
+        defaultsites.loadGeoJson('defaultsites.json');
+        defaultsites.setStyle(function(feature){
+          return /** @type {google.maps.Data.StyleOptions} */({
+            icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 2,
+                    labelOrigin: new google.maps.Point(-2, 4)
+                  },
+            label:  {
+                      text: feature.getProperty('Name'),
+                      //color: '#000000',
+                      color: 'white',
+                      fontSize: '12px',
+                      fontWeight: 'bold'
+                    },
+            zIndex: ++zIndex
+           });
+        });  
+        defaultsites.setMap(map);
+        allsites = new google.maps.Data();
+        allsites.loadGeoJson('allsites.json');
+        allsites.setStyle(function(feature){
+          return /** @type {google.maps.Data.StyleOptions} */({
+            icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 4,
+                    fillColor: 'grey',
+                    labelOrigin: new google.maps.Point(-2, 4)
+                  },
+            label:  {
+                      text: feature.getProperty('Name'),
+                      //color: 'black',
+                      color: 'white',
+                      fontSize: '18px',
+                      fontWeight: 'bold'
+                    },
+            zIndex: ++zIndex
+           });
+        });  
+         google.maps.event.addListener(map, 'zoom_changed', function() {
+          //document.getElementById('zoom').innerHTML = "zoom = " + map.getZoom();
+          var zoom = map.getZoom();
+          if (zoom >= 7 && zoom  < 10) {
+            defaultsites.setMap(map);
+            allsites.setMap(null);
+          } else if  (zoom >= 10)  {
+            allsites.setMap(map);
+            defaultsites.setMap(null);
+          }  else if (zoom < 7)  {
+          allsites.setMap(null);
+          defaultsites.setMap(null);
+          }
+        })
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=ADDAPIKEY&callback=initMap">
+    </script>
+  </body>
+</html>
